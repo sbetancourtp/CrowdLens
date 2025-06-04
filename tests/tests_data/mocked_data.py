@@ -1,7 +1,7 @@
 from models.entry_models import EntryRepo
 from datetime import datetime, timezone
 from uuid import uuid4
-from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 
 class EntryMockedData:
@@ -83,35 +83,22 @@ class EntryMockedData:
         save_flag=SAVE_FLAG_FALSE
     )
 
-    TELEGRAM_ENTRY_ONE = SimpleNamespace(
-        message=SimpleNamespace(
-            message_id=MESSAGE_ID_ONE,
-            from_user=SimpleNamespace(
-                id=USER_ID_ONE,
-                username=USERNAME_ONE
-            ),
-            chat=SimpleNamespace(
-                id=CHAT_ID_ONE
-            ),
-            date=TIMESTAMP_ONE,
-            text=TEXT_ONE,
-            to_dict=to_dict_zero.__func__
-        )
-    )
+    # Mock of telegram client entry object
 
-    # REPO_ENTRY_TWO = EntryRepo(
-    #     entry_id=ENTRY_ID_TWO,
-    #     message_id=MESSAGE_ID_TWO,
-    #     user_id=USER_ID_TWO,
-    #     username=USERNAME_TWO,
-    #     chat_id=CHAT_ID_TWO,
-    #     timestamp=TIMESTAMP_TWO,
-    #     text=TEXT_TWO,
-    #     raw_message=RAW_MESSAGE_TWO,
-    #     media_type=MEDIA_TYPE_TWO,
-    #     media_file_id=MEDIA_FILE_ID_TWO,
-    #     deck_id=DECK_ID_NONE,
-    #     save_flag=SAVE_FLAG_FALSE
-    # )
+    USER_ONE = MagicMock()
+    USER_ONE.id = USER_ID_ONE
+    USER_ONE.username = USERNAME_ONE
 
+    CHAT_ONE = MagicMock()
+    CHAT_ONE.id = CHAT_ID_ONE
 
+    MESSAGE_ONE = MagicMock()
+    MESSAGE_ONE.message_id = MESSAGE_ID_ONE
+    MESSAGE_ONE.from_user = USER_ONE
+    MESSAGE_ONE.chat = CHAT_ONE
+    MESSAGE_ONE.date = TIMESTAMP_ONE
+    MESSAGE_ONE.text = TEXT_ONE
+    MESSAGE_ONE.to_dict = to_dict_zero.__func__
+
+    TELEGRAM_ENTRY_ONE = MagicMock()
+    TELEGRAM_ENTRY_ONE.message = MESSAGE_ONE
