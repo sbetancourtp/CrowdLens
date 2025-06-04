@@ -4,7 +4,7 @@ from typing import List
 from uuid import UUID
 
 
-class Deck(BaseModel):
+class DeckRepo(BaseModel):
     deck_id: UUID
     deck_title: str
     first_entry_date: datetime
@@ -12,7 +12,7 @@ class Deck(BaseModel):
     provided_keywords: List[str] = Field(default_factory=list)
     generated_keywords: List[str] = Field(default_factory=list)
     all_entries_summary_sentence: str
-    star_flag: bool
+    save_flag: bool
     priority: int
 
     # Validation for keywords: no duplicates
