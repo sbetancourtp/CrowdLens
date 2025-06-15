@@ -56,8 +56,13 @@ class EntryMockedData:
     DECK_ID_NONE = None
     DECK_ID_SAMPLE = str(uuid4())
 
+    # Nulls
+
+    TEXT_NONE = None
+    MEDIA_TYPE_NONE = None
+
     @staticmethod
-    def to_dict_zero():
+    def to_dict_one():
         return {
             "message_id": EntryMockedData.MESSAGE_ID_ONE,
             "from": {"id": EntryMockedData.USER_ID_ONE, "username": EntryMockedData.USERNAME_ONE},
@@ -83,22 +88,38 @@ class EntryMockedData:
         save_flag=SAVE_FLAG_FALSE
     )
 
-    # Mock of telegram client entry object
+    # Mock ONE of telegram client entry object
 
     USER_ONE = MagicMock()
     USER_ONE.id = USER_ID_ONE
     USER_ONE.username = USERNAME_ONE
 
-    CHAT_ONE = MagicMock()
-    CHAT_ONE.id = CHAT_ID_ONE
-
     MESSAGE_ONE = MagicMock()
     MESSAGE_ONE.message_id = MESSAGE_ID_ONE
     MESSAGE_ONE.from_user = USER_ONE
-    MESSAGE_ONE.chat = CHAT_ONE
     MESSAGE_ONE.date = TIMESTAMP_ONE
     MESSAGE_ONE.text = TEXT_ONE
-    MESSAGE_ONE.to_dict = to_dict_zero.__func__
+    MESSAGE_ONE.photo = None
+    MESSAGE_ONE.voice = None
+    MESSAGE_ONE.to_dict = to_dict_one.__func__
 
     TELEGRAM_ENTRY_ONE = MagicMock()
     TELEGRAM_ENTRY_ONE.message = MESSAGE_ONE
+
+    # Mock TWO of telegram client entry object
+
+    USER_TWO = MagicMock()
+    USER_TWO.id = USER_ID_ONE
+    USER_TWO.username = None
+
+    MESSAGE_TWO = MagicMock()
+    MESSAGE_TWO.message_id = MESSAGE_ID_ONE
+    MESSAGE_TWO.from_user = USER_TWO
+    MESSAGE_TWO.date = TIMESTAMP_ONE
+    MESSAGE_TWO.text = TEXT_ONE
+    MESSAGE_TWO.photo = None
+    MESSAGE_TWO.voice = None
+    MESSAGE_TWO.to_dict.return_value = None
+
+    TELEGRAM_ENTRY_TWO = MagicMock()
+    TELEGRAM_ENTRY_TWO.message = MESSAGE_TWO

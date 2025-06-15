@@ -7,18 +7,17 @@ class EntryRepo(BaseModel):
     entry_id: str  # Optional internal ID or UUID
     message_id: int  # Telegram message ID
     user_id: int  # Telegram user ID
-    username: Optional[str] = None  # Username of the sender
     timestamp: datetime  # When the message was sent
+    save_flag: bool = False  # Flag to mark important entries
+    username: Optional[str] = None  # Username of the sender
     text: Optional[str] = None  # Text content of the message, if any
     raw_message: Optional[dict] = None  # Raw Telegram message JSON (optional)
     media_type: Optional[str] = None  # Type of media: "text", "photo", "voice", etc.
     deck_id: Optional[str] = None
-    save_flag: bool = False  # Flag to mark important entries
 
-    # Example validation: media_type must be one of expected values or None
     @field_validator('media_type')
     def validate_media_type(cls, v):
-        allowed_types = {None, "text"}
+        allowed_types = {"text"}
         if v not in allowed_types:
             raise ValueError(f"media_type '{v}' is not valid")
         return v

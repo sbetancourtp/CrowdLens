@@ -49,10 +49,9 @@ async def capture_entry_message(update: Update, context: ContextTypes.DEFAULT_TY
         user_id=message.from_user.id,
         username=message.from_user.username,
         timestamp=message.date,
-        text=message.text or None,
+        text=message.text,
         raw_message=message.to_dict(),
         media_type=media_type,
-        deck_id=None,
         save_flag=False
     )
 
@@ -60,6 +59,8 @@ async def capture_entry_message(update: Update, context: ContextTypes.DEFAULT_TY
     # await message.reply_text(f"Entry received:\n{entry}")
 
     write_entry_to_db(entry)
+
+    print('Entry successfully written to DB ✅')
 
     return ConversationHandler.END
 
