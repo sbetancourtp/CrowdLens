@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CrowdLens Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .deck {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            width: 200px;
+            height: 200px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .deck h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .deck p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 CrowdLens Dashboard</h1>
+    <div class="grid-container">
+        {% for deck in decks %}
+            <div class="deck">
+                <div>
+                    <h3>{{ deck.deck_title }}</h3>
+                    <p><strong>Prioridad:</strong> {{ deck.priority }}</p>
+                    <p><strong>Resumen:</strong> {{ deck.all_entries_summary_sentence }}</p>
+                </div>
+                <div>
+                    <p><strong>Keywords:</strong> {{ deck.provided_keywords | join(', ') }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

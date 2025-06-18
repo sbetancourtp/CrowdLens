@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import datetime
 from typing import List
 from uuid import UUID
+from models.entry_models import EntryRepo
 
 
 class DeckRepo(BaseModel):
@@ -9,11 +10,12 @@ class DeckRepo(BaseModel):
     deck_title: str
     first_entry_date: datetime
     last_entry_date: datetime
-    provided_keywords: List[str] = Field(default_factory=list)
-    generated_keywords: List[str] = Field(default_factory=list)
     all_entries_summary_sentence: str
     save_flag: bool
     priority: int
+    provided_keywords: List[str] = Field(default_factory=list)
+    generated_keywords: List[str] = Field(default_factory=list)
+    entries_list: List[EntryRepo] = Field(default_factory=list)
 
     # Validation for keywords: no duplicates
     @field_validator('provided_keywords', mode='after')
