@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>CrowdLens Dashboard</title>
     <style>
         body {
@@ -16,21 +17,21 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
         }
 
         .deck {
             background-color: white;
             border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 15px;
-            width: 200px;
-            height: 200px;
+            border-radius: 20px;
+            padding: 20px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            gap: 10px;
+            font-size: 14px;
         }
 
         .deck h3 {
@@ -38,9 +39,35 @@
             font-size: 18px;
         }
 
-        .deck p {
-            font-size: 14px;
-            margin: 5px 0;
+        .info-block p,
+        .keywords-block p {
+            margin: 4px 0;
+        }
+
+        .deck:hover {
+            transform: translateY(-5px);
+            box-shadow: 2px 2px 0 #000000aa;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .deck-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .icon {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .icon.star {
+            color: orange;
+        }
+
+        .icon.delete {
+            color: black;
         }
     </style>
 </head>
@@ -49,13 +76,28 @@
     <div class="grid-container">
         {% for deck in decks %}
             <div class="deck">
-                <div>
-                    <h3>{{ deck.deck_title }}</h3>
-                    <p><strong>Prioridad:</strong> {{ deck.priority }}</p>
-                    <p><strong>Resumen:</strong> {{ deck.all_entries_summary_sentence }}</p>
+                <h3>{{ deck.deck_title }}</h3>
+
+                <div class="info-block">
+                    <p><strong>Priority:</strong> {{ deck.priority }}</p>
+                    <p><strong>Oldest:</strong> {{ deck.first_entry_date.strftime('%d/%m/%y %I:%M %p') }}</p>
+                    <p><strong>Latest:</strong> {{ deck.last_entry_date.strftime('%d/%m/%y %I:%M %p') }}</p>
                 </div>
-                <div>
-                    <p><strong>Keywords:</strong> {{ deck.provided_keywords | join(', ') }}</p>
+
+                <div class="keywords-block">
+                    <p><strong>Provided Keywords:</strong> {{ deck.provided_keywords | join(', ') }}</p>
+                    <p><strong>Generated Keywords:</strong> {{ deck.generated_keywords | join(', ') }}</p>
+                </div>
+
+                <div class="deck-footer">
+                    <span class="icon star">
+                        {% if deck.star_flag %}
+                            ⭐
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    </span>
+                    <span class="icon delete">🗑️</span>
                 </div>
             </div>
         {% endfor %}

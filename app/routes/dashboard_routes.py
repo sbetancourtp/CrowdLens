@@ -5,9 +5,9 @@ from datetime import datetime
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
+
 @dashboard_bp.route("/")
 def dashboard():
-    # Simulamos algunos decks de prueba
     mock_decks = [
         DeckRepo(
             deck_id=uuid4(),
