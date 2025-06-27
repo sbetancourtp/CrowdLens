@@ -1,4 +1,5 @@
 # write_mock_data_db.py
+import random
 from uuid import uuid4
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -33,10 +34,15 @@ GROUPS = [
 
 def generate_text(group_keywords: list[str], index: int) -> str:
     base = group_keywords[index % len(group_keywords)]
-    return f"Report #{index}: {base} observed by residents. Further investigation pending."
+    return f"{base} observed by residents."
 
 
-def generate_mock_entry(group_id: int, index: int) -> EntryRepo:
+def pick_number(pf_number: int) -> int:
+    return random.choice([pf_number, random.randint(0, 4)])
+
+
+def generate_mock_entry(index: int, pf_number: int) -> EntryRepo:
+    group_id = pick_number(pf_number)
     group = GROUPS[group_id]
     text = generate_text(group["keywords"], index)
     return EntryRepo(
@@ -52,8 +58,8 @@ def generate_mock_entry(group_id: int, index: int) -> EntryRepo:
 
 
 if __name__ == "__main__":
-    for grp_id in range(5):
-        for i in range(10):
-            mock_entry = generate_mock_entry(grp_id, i)
-            write_entry_to_db(mock_entry)
+    preferred_number = random.randint(0, 4)
+    for i in range(250):
+        mock_entry = generate_mock_entry(i, preferred_number)
+        write_entry_to_db(mock_entry)
     print("✅ 50 mock entries inserted (5 groups × 10 entries).")

@@ -1,5 +1,7 @@
 import sqlite3
 from pathlib import Path
+from typing import List
+from data.db.db_utils import map_db_to_entryrepo
 from models.entry_models import EntryRepo
 
 # Use the current directory (same where this file is located)
@@ -72,3 +74,15 @@ def write_entry_to_db(entry: EntryRepo) -> None:
 
     conn.commit()
     conn.close()
+
+
+def get_all_live_entries() -> List[EntryRepo]:
+    """Retrieve all entries from the entries table and return them as EntryRepo objects."""
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM entries WHERE save_flag = 0")
+        rows = cursor.fetchall()
+
+        entries = [map_db_to_entryrepo(row) for row in rows]
+
+    return entries

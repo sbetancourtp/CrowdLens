@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 from models.entry_models import EntryRepo
 
@@ -10,9 +10,10 @@ class DeckRepo(BaseModel):
     deck_title: str
     first_entry_date: datetime
     last_entry_date: datetime
-    all_entries_summary_sentence: str
+    all_entries_summary_sentence: Optional[str] = ''
     save_flag: bool
     priority: int
+    amount: int = 0
     provided_keywords: List[str] = Field(default_factory=list)
     generated_keywords: List[str] = Field(default_factory=list)
     entries_list: List[EntryRepo] = Field(default_factory=list)
