@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="refresh" content="3">  <!-- Refresh every 3 seconds -->
     <meta charset="UTF-8">
     <title>CrowdLens Dashboard</title>
     <style>
@@ -72,9 +71,64 @@
         }
     </style>
 </head>
+<script>
+    async function fetchDecks() {
+        try {
+            const response = await fetch('/api/decks');
+            const data = await response.json();
+            renderDecks(data);
+        } catch (error) {
+            console.error("Error fetching decks:", error);
+        }
+    }
+
+    function renderDecks(decks) {
+        const container = document.getElementById('deck-container');
+        container.innerHTML = ''; // Cleans current content
+
+        decks.forEach(deck => {
+            const deckDiv = document.createElement('div');
+            deckDiv.className = 'deck';
+
+            deckDiv.innerHTML = `
+                <h3>${deck.deck_title}</h3>
+
+                <div class="info-block">
+                    <p><strong>Priority:</strong> ${deck.priority}</p>
+                    <p><strong>Total Entries:</strong> ${deck.amount}</p>
+                    <p><strong>Oldest:</strong> ${formatDate(deck.first_entry_date)}</p>
+                    <p><strong>Latest:</strong> ${formatDate(deck.last_entry_date)}</p>
+                </div>
+
+                <div class="keywords-block">
+                    <p><strong>Provided Keywords:</strong> ${deck.provided_keywords.join(', ')}</p>
+                    <p><strong>Generated Keywords:</strong> ${deck.generated_keywords.join(', ')}</p>
+                </div>
+
+                <div class="deck-footer">
+                    <span class="icon star">
+                        ${deck.star_flag ? '⭐' : '☆'}
+                    </span>
+                    <span class="icon delete">🗑️</span>
+                </div>
+            `;
+
+            container.appendChild(deckDiv);
+        });
+    }
+
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleString('en-GB'); // Adjust to any preferred format
+    }
+
+    // Polls every 3 seconds
+    setInterval(fetchDecks, 3000);
+    fetchDecks(); // First immediate load
+</script>
 <body>
     <h1>📊 CrowdLens Dashboard</h1>
-    <div class="grid-container">
+    <div id="deck-container" class="grid-container">
         {% for deck in decks %}
             <div class="deck">
                 <h3>{{ deck.deck_title }}</h3>
