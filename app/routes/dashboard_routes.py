@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template
-from processing.deck_generator import generate_decks_from_entries
+
+from data import shared_state
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
 @dashboard_bp.route("/")
 def dashboard():
-    mock_decks = generate_decks_from_entries()
+    with shared_state.decks_lock:
+        decks = shared_state.shared_decks
 
-    return render_template("dashboard.html", decks=mock_decks)
+    return render_template("dashboard.html", decks=decks)

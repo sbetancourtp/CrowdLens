@@ -1,6 +1,8 @@
 from collections import defaultdict, Counter
-from typing import List
+from typing import List, Dict
 from uuid import uuid4
+
+from data import shared_state
 from models.entry_models import EntryRepo
 from models.deck_models import DeckRepo
 from processing.keyword_extraction import extract_keywords
@@ -10,37 +12,38 @@ MAX_KEYWORDS_PER_SIGNATURE = 5  # Maximum number of keywords to form a deck sign
 MIN_ENTRIES_PER_DECK = 5        # Minimum number of entries to form a deck
 
 
-def group_entries_by_keyword_signature(entries: List[EntryRepo]) -> List[DeckRepo]:
-    """
-    Group entries into decks based on shared keyword signatures (2 to 5 keywords).
-    Returns a list of DeckRepo objects.
-    """
+def create_decks_by_keyword_signature(entries: List[EntryRepo]) -> List[DeckRepo]:
     if not entries:
         return []
 
-    # Use extract_keywords to get top keywords per entry
-    keywords_per_entry = extract_keywords(entries, top_k=MAX_KEYWORDS_PER_SIGNATURE)
+    keywords_per_entry: Dict[str, List[str]] = extract_keywords(entries, top_k=MAX_KEYWORDS_PER_SIGNATURE)
 
-    # Count keyword frequencies across all entries
-    keyword_counter = Counter()
+    keyword_frequency_counter = Counter()
     for kws in keywords_per_entry.values():
-        keyword_counter.update(kws)
+        keyword_frequency_counter.update(kws)
 
-    # Group entries by keyword signature
+    # Initialize dict with all signature->entries already known
     signature_to_entries = defaultdict(list)
 
+    for old_signature, old_entries in shared_state.unused_signature_to_entries:
+        signature_to_entries[old_signature].extend(old_entries)
+
+    # Clear shared_state to start from zero
+    shared_state.unused_signature_to_entries.clear()
+
+    # Group new entries
     for entry in entries:
         keywords = keywords_per_entry.get(entry.entry_id, [])
         if len(keywords) < MIN_KEYWORDS_PER_SIGNATURE:
             continue
-        keywords = sorted(set(keywords), key=lambda k: -keyword_counter[k])
+        keywords = sorted(set(keywords), key=lambda k: -keyword_frequency_counter[k])
         for size in range(MAX_KEYWORDS_PER_SIGNATURE, MIN_KEYWORDS_PER_SIGNATURE - 1, -1):
             if len(keywords) >= size:
                 signature = tuple(sorted(keywords[:size]))
                 signature_to_entries[signature].append(entry)
-                break  # Assign to the most specific signature
+                break
 
-    # Build DeckRepo objects
+    # Build decks or save incomplete entry groups
     decks = []
     for signature, grouped_entries in signature_to_entries.items():
         if len(grouped_entries) >= MIN_ENTRIES_PER_DECK:
@@ -58,5 +61,7 @@ def group_entries_by_keyword_signature(entries: List[EntryRepo]) -> List[DeckRep
                 priority=50,
             )
             decks.append(deck)
+        else:
+            shared_state.unused_signature_to_entries.append((signature, grouped_entries))
 
     return decks

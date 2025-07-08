@@ -1,3 +1,4 @@
+import asyncio
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, ContextTypes,
@@ -12,7 +13,7 @@ SEND_ENTRY_WAITING_MESSAGE = 1
 
 async def send_entry_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Please send the me ssage now. Ensure that the text is well-written"
+        "Please send the message now. Ensure that the text is well-written"
         " and free of any inappropriate or offensive language, as such content will be excluded."
     )
     return SEND_ENTRY_WAITING_MESSAGE
@@ -66,6 +67,8 @@ async def capture_entry_message(update: Update, context: ContextTypes.DEFAULT_TY
 
 
 def run_bot(token: str):
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
     app = ApplicationBuilder().token(token).build()
 
     app.add_handler(CommandHandler("start", start))

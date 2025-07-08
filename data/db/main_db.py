@@ -1,8 +1,10 @@
 import sqlite3
 from pathlib import Path
 from typing import List
+from data import shared_state
 from data.db.db_utils import map_db_to_entryrepo
 from models.entry_models import EntryRepo
+from datetime import datetime
 
 # Use the current directory (same where this file is located)
 DB_PATH = Path(__file__).parent / "crowdlens.db"
@@ -84,5 +86,22 @@ def get_all_live_entries() -> List[EntryRepo]:
         rows = cursor.fetchall()
 
         entries = [map_db_to_entryrepo(row) for row in rows]
+        shared_state.DECKS_UPDATE_TIMESTAMP = datetime.utcnow()
+
+    return entries
+
+
+def get_all_live_entries_from_timestamp() -> List[EntryRepo]:
+    """Return entries with save_flag=0 and timestamp newer than the last_updated_timestamp."""
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM entries 
+            WHERE save_flag = 0 AND timestamp > ?
+        """, (shared_state.DECKS_UPDATE_TIMESTAMP.isoformat(),))
+        rows = cursor.fetchall()
+
+    entries = [map_db_to_entryrepo(row) for row in rows]
+    shared_state.DECKS_UPDATE_TIMESTAMP = datetime.utcnow()
 
     return entries
