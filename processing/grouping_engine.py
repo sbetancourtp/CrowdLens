@@ -28,7 +28,7 @@ def create_decks_by_keyword_signature(entries: List[EntryRepo]) -> List[DeckRepo
     for old_signature, old_entries in shared_state.unused_signature_to_entries:
         signature_to_entries[old_signature].extend(old_entries)
 
-    # Clear shared_state to start from zero
+    # Clear unused_signature_to_entries to start from zero
     shared_state.unused_signature_to_entries.clear()
 
     # Group new entries
@@ -36,10 +36,10 @@ def create_decks_by_keyword_signature(entries: List[EntryRepo]) -> List[DeckRepo
         keywords = keywords_per_entry.get(entry.entry_id, [])
         if len(keywords) < MIN_KEYWORDS_PER_SIGNATURE:
             continue
-        keywords = sorted(set(keywords), key=lambda k: -keyword_frequency_counter[k])
+        freq_sorted_kwds = sorted(set(keywords), key=lambda k: -keyword_frequency_counter[k])
         for size in range(MAX_KEYWORDS_PER_SIGNATURE, MIN_KEYWORDS_PER_SIGNATURE - 1, -1):
-            if len(keywords) >= size:
-                signature = tuple(sorted(keywords[:size]))
+            if len(freq_sorted_kwds) >= size:
+                signature = tuple(sorted(freq_sorted_kwds[:size]))
                 signature_to_entries[signature].append(entry)
                 break
 

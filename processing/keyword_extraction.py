@@ -6,7 +6,8 @@ import numpy as np
 import string
 from nltk.corpus import stopwords
 
-STOPWORDS = set(stopwords.words('english') + stopwords.words('spanish') + stopwords.words('portuguese'))
+STOPWORDS = set(stopwords.words('english') + stopwords.words('spanish') +
+                stopwords.words('portuguese'))
 
 
 def clean_text(text: str) -> str:
@@ -39,7 +40,6 @@ def extract_keywords(entries: List[EntryRepo], top_k: int = 5) -> Dict[str, List
     keywords_per_entry = {}
 
     for i, entry_id in enumerate(entry_ids):
-        # TODO This process should be a function, will need to be used more
         row = tfidf_matrix[i].toarray().flatten()
         top_indices = row.argsort()[-top_k:][::-1]
         keywords = [feature_names[idx] for idx in top_indices if is_valid_keyword(feature_names[idx])]

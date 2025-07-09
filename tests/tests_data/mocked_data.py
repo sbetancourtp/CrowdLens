@@ -18,13 +18,13 @@ class EntryMockedData:
     USER_ID_ONE = 1043412725
     USERNAME_ONE = "cmejia"
     TIMESTAMP_ONE = datetime(2025, 5, 29, 12, 19, 43, tzinfo=timezone.utc)
-    TEXT_ONE = "Test Entry 📄📆"
+    TEXT_ONE_THREE_KWDS = "A pen, a mirror and a towel. 🖊️🪞"
     RAW_MESSAGE_ONE = {
         "message_id": MESSAGE_ID_ONE,
         "from": {"id": USER_ID_ONE, "username": USERNAME_ONE},
         "chat": {"id": CHAT_ID_ONE},
         "date": TIMESTAMP_ONE.isoformat(),
-        "text": TEXT_ONE
+        "text": TEXT_ONE_THREE_KWDS
     }
     MEDIA_TYPE_ONE = "text"
 
@@ -47,6 +47,10 @@ class EntryMockedData:
 
     MEDIA_FILE_ID_ONE = None
     MEDIA_FILE_ID_TWO = "abc123mediafile"
+
+    # Different text variations
+    TEXT_WITH_FOUR_KEYWORDS = 'The ant walked in the street with a banana!'
+    TEXT_WITH_FIVE_KEYWORDS = 'He did not drink the pill and his health is on decline, help him!'
 
     # Flags
     SAVE_FLAG_TRUE = True
@@ -73,14 +77,29 @@ class EntryMockedData:
 
     # Entries
 
-    REPO_ENTRY_ONE = EntryRepo(
+    REPO_ENTRY_ONE_WITH_THREE_KWDS = EntryRepo(
         entry_id=ENTRY_ID_ONE,
         message_id=MESSAGE_ID_ONE,
         user_id=USER_ID_ONE,
         username=USERNAME_ONE,
         chat_id=CHAT_ID_ONE,
         timestamp=TIMESTAMP_ONE,
-        text=TEXT_ONE,
+        text=TEXT_ONE_THREE_KWDS,
+        raw_message=RAW_MESSAGE_ONE,
+        media_type=MEDIA_TYPE_ONE,
+        media_file_id=MEDIA_FILE_ID_ONE,
+        deck_id=DECK_ID_NONE,
+        save_flag=SAVE_FLAG_FALSE
+    )
+
+    REPO_ENTRY_ONE_WITH_FOUR_KWDS = EntryRepo(
+        entry_id=ENTRY_ID_ONE,
+        message_id=MESSAGE_ID_ONE,
+        user_id=USER_ID_ONE,
+        username=USERNAME_ONE,
+        chat_id=CHAT_ID_ONE,
+        timestamp=TIMESTAMP_ONE,
+        text=TEXT_WITH_FOUR_KEYWORDS,
         raw_message=RAW_MESSAGE_ONE,
         media_type=MEDIA_TYPE_ONE,
         media_file_id=MEDIA_FILE_ID_ONE,
@@ -98,7 +117,7 @@ class EntryMockedData:
     MESSAGE_ONE.message_id = MESSAGE_ID_ONE
     MESSAGE_ONE.from_user = USER_ONE
     MESSAGE_ONE.date = TIMESTAMP_ONE
-    MESSAGE_ONE.text = TEXT_ONE
+    MESSAGE_ONE.text = TEXT_ONE_THREE_KWDS
     MESSAGE_ONE.photo = None
     MESSAGE_ONE.voice = None
     MESSAGE_ONE.to_dict = to_dict_one.__func__
@@ -116,7 +135,7 @@ class EntryMockedData:
     MESSAGE_TWO.message_id = MESSAGE_ID_ONE
     MESSAGE_TWO.from_user = USER_TWO
     MESSAGE_TWO.date = TIMESTAMP_ONE
-    MESSAGE_TWO.text = TEXT_ONE
+    MESSAGE_TWO.text = TEXT_ONE_THREE_KWDS
     MESSAGE_TWO.photo = None
     MESSAGE_TWO.voice = None
     MESSAGE_TWO.to_dict.return_value = None

@@ -20,7 +20,7 @@ async def test_capture_entry_message_text(monkeypatch):
         entry_obj = write_entry_to_db_mock.call_args[0][0]
 
         assert isinstance(entry_obj.text, str)
-        assert entry_obj.text == Emd.TEXT_ONE
+        assert entry_obj.text == Emd.TEXT_ONE_THREE_KWDS
         assert len(entry_obj.entry_id) == 36
         assert entry_obj.media_type == "text"
         assert entry_obj.user_id == Emd.USER_ID_ONE
@@ -40,7 +40,7 @@ async def test_capture_entry_message_with_minimal_data(monkeypatch):
         entry_obj = write_entry_to_db_mock.call_args[0][0]
 
         assert isinstance(entry_obj.text, str)
-        assert entry_obj.text == Emd.TEXT_ONE
+        assert entry_obj.text == Emd.TEXT_ONE_THREE_KWDS
         assert len(entry_obj.entry_id) == 36
         assert entry_obj.media_type == "text"
         assert entry_obj.user_id == Emd.USER_ID_ONE
