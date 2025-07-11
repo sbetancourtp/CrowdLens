@@ -8,6 +8,7 @@ import threading
 import time
 from app import create_app
 from processing.deck_generator import generate_decks_from_entries
+from semantic_processing.semantic_deck_generator import generate_semantic_decks
 
 app = create_app()
 
@@ -23,7 +24,8 @@ if __name__ == "__main__":
 
     time.sleep(3)
 
-    deck_thread = threading.Thread(target=generate_decks_from_entries, daemon=True)
+    # generate_decks_from_entries - generate_semantic_decks
+    deck_thread = threading.Thread(target=generate_semantic_decks, daemon=True)
     deck_thread.start()
 
     # Execute Flask app on main thread

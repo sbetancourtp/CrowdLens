@@ -28,7 +28,7 @@ def generate_decks_from_entries():
                 shared_state.shared_decks.extend(decks)
 
         time.sleep(CHECK_INTERVAL_SECONDS)
-        print('Listening Db cyle complete ✅')
+        print('Listening Db cycle complete ✅')
 
 
 def update_decks_from_entries() -> List[DeckRepo]:
