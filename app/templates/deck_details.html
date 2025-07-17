@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Deck Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 30px;
+        }
+
+        .back-button {
+            margin-bottom: 20px;
+        }
+
+        .deck-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .deck-header {
+            margin-bottom: 20px;
+        }
+
+        .deck-header h2 {
+            margin-top: 0;
+        }
+
+        .deck-info p {
+            margin: 4px 0;
+        }
+
+        .keywords span {
+            padding: 4px 8px;
+            margin-right: 5px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .provided {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .generated {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .entries-container {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            border-top: 1px solid #ccc;
+            padding-top: 15px;
+        }
+
+        .entry {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .entry-header {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .entry-text span.highlight-keyword {
+            font-weight: bold;
+            background-color: yellow;
+        }
+
+        .entry-text span.highlight-generated {
+            font-weight: bold;
+            background-color: #add8e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="back-button">
+        <a href="/">&larr; Back to Dashboard</a>
+    </div>
+
+    <div class="deck-container">
+        <div class="deck-header">
+            <h2>{{ deck.deck_title }}</h2>
+            <div class="deck-info">
+                <p><strong>Priority:</strong> {{ deck.priority }}</p>
+                <p><strong>Total Entries:</strong> {{ deck.amount }}</p>
+                <p><strong>Oldest:</strong> {{ deck.first_entry_date.strftime('%d/%m/%Y, %H:%M:%S') }}</p>
+                <p><strong>Latest:</strong> {{ deck.last_entry_date.strftime('%d/%m/%Y, %H:%M:%S') }}</p>
+            </div>
+            <div class="keywords">
+                <p><strong>Provided Keywords:</strong>
+                    {% for kw in deck.provided_keywords %}<span class="provided">{{ kw }}</span>{% endfor %}
+                </p>
+                <p><strong>Generated Keywords:</strong>
+                    {% for kw in deck.generated_keywords %}<span class="generated">{{ kw }}</span>{% endfor %}
+                </p>
+            </div>
+        </div>
+
+        <div class="entries-container">
+            {% for entry in deck.entries_list|sort(attribute='timestamp', reverse=True) %}
+                <div class="entry">
+                    <div class="entry-header">
+                        Datetime: {{ entry.timestamp.strftime('%d/%m/%Y, %H:%M:%S') }} | Username: {{ entry.username }}
+                    </div>
+                    <div class="entry-text">
+                        {% set text = entry.text %}
+                        {% for kw in deck.generated_keywords %}
+                            {% set text = text.replace(kw, '<span class="highlight-generated">' + kw + '</span>') %}
+                        {% endfor %}
+                        {% for kw in deck.provided_keywords %}
+                            {% set text = text.replace(kw, '<span class="highlight-keyword">' + kw + '</span>') %}
+                        {% endfor %}
+                        {{ text | safe }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

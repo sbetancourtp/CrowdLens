@@ -57,6 +57,15 @@
             margin-top: auto;
         }
 
+        .deck-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .deck-link .deck {
+            cursor: pointer;
+        }
+
         .icon {
             cursor: pointer;
             font-size: 18px;
@@ -89,6 +98,10 @@
         decks.forEach(deck => {
             const deckDiv = document.createElement('div');
             deckDiv.className = 'deck';
+            deckDiv.style.cursor = 'pointer';
+            deckDiv.onclick = () => {
+                window.location.href = `/deck/${deck.deck_id}`;
+            };
 
             deckDiv.innerHTML = `
                 <h3>${deck.deck_title}</h3>
@@ -130,7 +143,7 @@
     <h1>📊 CrowdLens Dashboard</h1>
     <div id="deck-container" class="grid-container">
         {% for deck in decks %}
-            <div class="deck">
+            <div class="deck" onclick="window.location.href='/deck/{{ deck.deck_id }}'" style="cursor: pointer;">
                 <h3>{{ deck.deck_title }}</h3>
 
                 <div class="info-block">
