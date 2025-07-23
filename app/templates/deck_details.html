@@ -111,11 +111,16 @@
 
         <div class="entries-container">
             {% for entry in deck.entries_list|sort(attribute='timestamp', reverse=True) %}
-                <div class="entry">
+                <div class="entry"
+                     data-timestamp="{{ entry.timestamp.strftime('%d/%m/%Y, %H:%M:%S') }}"
+                     data-username="{{ entry.username }}"
+                     data-text="{{ entry.text | e }}"
+                     onclick="openEntryModal(this)">
                     <div class="entry-header">
                         Datetime: {{ entry.timestamp.strftime('%d/%m/%Y, %H:%M:%S') }} | Username: {{ entry.username }}
                     </div>
                     <div class="entry-text">
+                        {# highlighted text, just as before #}
                         {% set text = entry.text %}
                         {% for kw in deck.generated_keywords %}
                             {% set text = text.replace(kw, '<span class="highlight-generated">' + kw + '</span>') %}
@@ -129,5 +134,37 @@
             {% endfor %}
         </div>
     </div>
+    <div id="entryModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+         background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:10px; max-width:600px; max-height:80vh; overflow-y:auto;">
+            <div style="text-align:right;">
+                <button onclick="closeEntryModal()" style="font-size:20px; background:none; border:none;">&times;</button>
+            </div>
+            <h3 id="modalTimestamp"></h3>
+            <p><strong>Username:</strong> <span id="modalUsername"></span></p>
+            <div id="modalText" style="margin-top:10px;"></div>
+        </div>
+    </div>
+    <script>
+        function openEntryModal(element) {
+            const timestamp = element.getAttribute('data-timestamp');
+            const username = element.getAttribute('data-username');
+            const rawText = element.getAttribute('data-text');
+
+            // Insert data
+            document.getElementById('modalTimestamp').innerText = timestamp;
+            document.getElementById('modalUsername').innerText = username;
+
+            // Reapply highlighted text, or just have plain text:
+            document.getElementById('modalText').innerText = rawText;
+
+            // Show modal
+            document.getElementById('entryModal').style.display = 'flex';
+        }
+
+        function closeEntryModal() {
+            document.getElementById('entryModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
