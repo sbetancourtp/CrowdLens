@@ -58,7 +58,7 @@ def create_decks_by_keyword_signature(entries: List[EntryRepo]) -> List[DeckRepo
                 entries_list=sorted_entries,
                 amount=len(sorted_entries),
                 save_flag=False,
-                priority=50,
+                priority=0,
             )
             decks.append(deck)
         else:

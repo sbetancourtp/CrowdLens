@@ -1,0 +1,1 @@
+from app.routes.dashboard_routes import dashboard
