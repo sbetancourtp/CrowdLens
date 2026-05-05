@@ -1,13 +1,11 @@
-from flask import Blueprint, render_template, jsonify, abort, url_for
-
+from flask import render_template, jsonify, abort
 from data import shared_state
 from models.deck_models import DeckRepo
 from typing import List
+from app import app
 
-dashboard_bp = Blueprint("dashboard", __name__)
 
-
-@dashboard_bp.route("/")
+@app.route("/")
 def dashboard():
     with shared_state.decks_lock:
         decks: List[DeckRepo] = shared_state.shared_decks
@@ -17,14 +15,14 @@ def dashboard():
     return render_template("dashboard.html", decks=sorted_decks)
 
 
-@dashboard_bp.route("/api/decks")
+@app.route("/api/decks")
 def api_decks():
     with shared_state.decks_lock:
         decks = shared_state.shared_decks.copy()
     return jsonify([deck.model_dump() for deck in decks])
 
 
-@dashboard_bp.route("/deck/<deck_id>")
+@app.route("/deck/<deck_id>")
 def deck_details(deck_id: str):
     with shared_state.decks_lock:
         matching_deck = next((deck for deck in shared_state.shared_decks if str(deck.deck_id) == deck_id), None)
